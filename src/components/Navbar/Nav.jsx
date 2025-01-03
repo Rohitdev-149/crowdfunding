@@ -1,130 +1,167 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import ConfirmDialog from "../common/ConfirmDialog";
 import "./Nav.css";
+import { categories } from "../../config/categories";
 
 const Nav = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [showSignOutDialog, setShowSignOutDialog] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { isAuthenticated, logout } = useAuth();
 
   const handleSearch = (e) => {
     e.preventDefault();
     console.log("Searching for:", searchQuery);
   };
 
-  const handleCategorySelect = (category) => {
-    setSelectedCategory(category);
-    setIsDropdownOpen(false);
+  const handleCategorySelect = async (category) => {
+    setIsLoading(true);
+    try {
+      setSelectedCategory(category.name);
+      setIsDropdownOpen(false);
+      await navigate(`/category/${category.name.toLowerCase()}`);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const categories = [
-    "Medical",
-    "Emergency",
-    "Business",
-    "Animal",
-    "Education",
-    "Community",
-    "Sports",
-    "Creative",
-  ];
+  const handleSignOutClick = (e) => {
+    e.preventDefault();
+    setShowSignOutDialog(true);
+  };
+
+  const handleConfirmSignOut = () => {
+    logout();
+    setShowSignOutDialog(false);
+    navigate("/");
+  };
 
   return (
-    <nav className="navbar">
-      <div className="nav-left">
-        <Link to="/" className="nav-logo">
-          CrowdFund
-        </Link>
-        <div className="search-container">
-          <form onSubmit={handleSearch}>
-            <input
-              type="text"
-              placeholder="Search fundraisers..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="search-input"
-            />
-            <button type="submit" className="search-button">
-              <i className="fas fa-search"></i>
-            </button>
-          </form>
+    <>
+      <nav className="navbar">
+        <div className="nav-left">
+          <Link to="/" className="nav-logo">
+            CrowdFund
+          </Link>
+          <div className="search-container">
+            <form onSubmit={handleSearch}>
+              <input
+                type="text"
+                placeholder="Search fundraisers..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="search-input"
+              />
+              <button type="submit" className="search-button">
+                <i className="fas fa-search"></i>
+              </button>
+            </form>
+          </div>
         </div>
-      </div>
 
-      <div className="nav-menu">
-        <Link
-          to="/"
-          className={`nav-item ${location.pathname === "/" ? "active" : ""}`}
-        >
-          Home
-        </Link>
-        <div
-          className="nav-dropdown"
-          onMouseEnter={() => setIsDropdownOpen(true)}
-          onMouseLeave={() => setIsDropdownOpen(false)}
-        >
-          <button
-            className={`nav-item dropdown-trigger ${
-              selectedCategory ? "active" : ""
+        <div className="nav-menu">
+          <Link
+            to="/"
+            className={`nav-item ${location.pathname === "/" ? "active" : ""}`}
+          >
+            Home
+          </Link>
+          <div
+            className="nav-dropdown"
+            onMouseEnter={() => setIsDropdownOpen(true)}
+            onMouseLeave={() => setIsDropdownOpen(false)}
+          >
+            <button
+              className={`nav-item dropdown-trigger ${
+                selectedCategory ? "active" : ""
+              }`}
+            >
+              {selectedCategory || "Categories"}{" "}
+              <i className="fas fa-chevron-down"></i>
+            </button>
+            {isDropdownOpen && (
+              <div className="dropdown-content">
+                {isLoading ? (
+                  <div className="dropdown-loading">
+                    <i className="fas fa-spinner"></i>
+                    Loading categories...
+                  </div>
+                ) : (
+                  categories.map((category) => (
+                    <div key={category.name} className="category-group">
+                      <div
+                        className="category-main"
+                        onClick={() => handleCategorySelect(category)}
+                      >
+                        <i className={category.icon}></i>
+                        <span>{category.name}</span>
+                      </div>
+                      <div className="subcategories">
+                        {category.subcategories.map((sub) => (
+                          <div
+                            key={sub}
+                            className="subcategory"
+                            onClick={() => handleCategorySelect({ name: sub })}
+                          >
+                            {sub}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
+          </div>
+          <Link
+            to="/about"
+            className={`nav-item ${
+              location.pathname === "/about" ? "active" : ""
             }`}
           >
-            {selectedCategory || "Categories"}{" "}
-            <i className="fas fa-chevron-down"></i>
-          </button>
-          {isDropdownOpen && (
-            <div className="dropdown-content">
-              {categories.map((category) => (
+            About
+          </Link>
+
+          <div className="auth-buttons">
+            {isAuthenticated ? (
+              <>
                 <Link
-                  key={category}
-                  to={`/category/${category.toLowerCase()}`}
-                  className={`dropdown-item ${
-                    selectedCategory === category ? "active" : ""
-                  }`}
-                  onClick={() => handleCategorySelect(category)}
+                  to="/create-project"
+                  className="nav-item create-project-btn"
                 >
-                  {category}
+                  <i className="fas fa-plus"></i> Create Project
                 </Link>
-              ))}
-            </div>
-          )}
+                <button
+                  className="nav-item sign-out-btn"
+                  onClick={handleSignOutClick}
+                >
+                  <i className="fas fa-sign-out-alt"></i>
+                  Sign Out
+                </button>
+              </>
+            ) : (
+              <Link to="/signin" className="nav-item sign-in-btn">
+                <i className="fas fa-sign-in-alt"></i>
+                Sign In
+              </Link>
+            )}
+          </div>
         </div>
-        <Link
-          to="/about"
-          className={`nav-item ${
-            location.pathname === "/about" ? "active" : ""
-          }`}
-        >
-          About
-        </Link>
-        <Link
-          to="/how-it-works"
-          className={`nav-item ${
-            location.pathname === "/how-it-works" ? "active" : ""
-          }`}
-        >
-          How it Works
-        </Link>
-        <Link to="/create-project" className="nav-item create-project-btn">
-          <i className="fas fa-plus"></i> Create Project
-        </Link>
-        <Link
-          to="/signin"
-          className={`nav-item sign-in ${
-            location.pathname === "/signin" ? "active" : ""
-          }`}
-        >
-          Sign In
-        </Link>
-        <Link
-          to="/signout"
-          className={`nav-item ${
-            location.pathname === "/signout" ? "active" : ""
-          }`}
-        >
-          Sign Out
-        </Link>
-      </div>
-    </nav>
+      </nav>
+
+      <ConfirmDialog
+        isOpen={showSignOutDialog}
+        message="Are you sure you want to sign out?"
+        onConfirm={handleConfirmSignOut}
+        onCancel={() => setShowSignOutDialog(false)}
+      />
+    </>
   );
 };
 

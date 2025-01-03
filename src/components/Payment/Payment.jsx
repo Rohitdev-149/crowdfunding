@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useProjects } from "../../context/ProjectContext";
 import "./Payment.css";
 
 const Payment = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const project = location.state?.project;
+  const { updateProjectProgress } = useProjects();
 
   const [paymentDetails, setPaymentDetails] = useState({
     amount: project?.minInvestment || "",
@@ -20,10 +22,7 @@ const Payment = () => {
       <div className="payment-page">
         <div className="payment-container">
           <h2>No project selected</h2>
-          <button 
-            className="cancel-button"
-            onClick={() => navigate('/')}
-          >
+          <button className="cancel-button" onClick={() => navigate("/")}>
             Return to Home
           </button>
         </div>
@@ -33,42 +32,93 @@ const Payment = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setPaymentDetails(prev => ({
+    setPaymentDetails((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Here you would typically process the payment
-    alert('Payment processed successfully!');
-    navigate('/');
+
+    // Update project progress
+    updateProjectProgress(project.id, parseFloat(paymentDetails.amount));
+
+    // Show success message
+    alert(`Successfully invested £${paymentDetails.amount} in ${project.name}`);
+
+    // Navigate back to home
+    navigate("/");
   };
 
   return (
     <div className="payment-page">
       <div className="payment-container">
-        <div className="project-summary">
-          <img 
-            src={project.image} 
-            alt={project.name} 
-            className="project-image"
-          />
-          <div className="project-info">
-            <h2>{project.name}</h2>
-            <div className="project-stats">
-              <div className="stat">
-                <span>Target Amount:</span>
-                <span>£{project.target}</span>
+        <div className="project-details-section">
+          <div className="project-header">
+            <img
+              src={project.image}
+              alt={project.name}
+              className="project-image"
+            />
+            <div className="project-title">
+              <h2>{project.name}</h2>
+              <span className="project-category">{project.category}</span>
+            </div>
+          </div>
+
+          <div className="project-metrics">
+            <div className="metric-card">
+              <div className="metric-value">£{project.raised}</div>
+              <div className="metric-label">Raised</div>
+            </div>
+            <div className="metric-card">
+              <div className="metric-value">£{project.target}</div>
+              <div className="metric-label">Target</div>
+            </div>
+            <div className="metric-card">
+              <div className="metric-value">{project.investors || 127}</div>
+              <div className="metric-label">Investors</div>
+            </div>
+            <div className="metric-card">
+              <div className="metric-value">{project.daysLeft}</div>
+              <div className="metric-label">Days Left</div>
+            </div>
+          </div>
+
+          <div className="funding-status">
+            <div className="progress-header">
+              <span>Progress</span>
+              <span>{project.progress}%</span>
+            </div>
+            <div className="progress-bar">
+              <div
+                className="progress-fill"
+                style={{ width: `${project.progress}%` }}
+              ></div>
+            </div>
+          </div>
+
+          <div className="investment-terms">
+            <h3>Investment Terms</h3>
+            <div className="terms-grid">
+              <div className="term-item">
+                <span className="term-label">Minimum Investment</span>
+                <span className="term-value">£{project.minInvestment}</span>
               </div>
-              <div className="stat">
-                <span>Minimum Investment:</span>
-                <span>£{project.minInvestment}</span>
+              <div className="term-item">
+                <span className="term-label">Equity Offered</span>
+                <span className="term-value">{project.equity || "10%"}</span>
               </div>
-              <div className="stat">
-                <span>Progress:</span>
-                <span>{project.progress}%</span>
+              <div className="term-item">
+                <span className="term-label">Valuation</span>
+                <span className="term-value">£{project.valuation || "3M"}</span>
+              </div>
+              <div className="term-item">
+                <span className="term-label">Share Price</span>
+                <span className="term-value">
+                  £{project.sharePrice || "100"}
+                </span>
               </div>
             </div>
           </div>
@@ -165,4 +215,4 @@ const Payment = () => {
   );
 };
 
-export default Payment; 
+export default Payment;

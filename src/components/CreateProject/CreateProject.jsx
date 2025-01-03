@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useProjects } from "../../context/ProjectContext";
+import { getAllCategories, getCategoryIcon } from "../../config/categories";
 import "./CreateProject.css";
 
 const CreateProject = () => {
@@ -8,27 +9,18 @@ const CreateProject = () => {
   const { addProject } = useProjects();
   const [projectData, setProjectData] = useState({
     name: "",
-    category: "",
     description: "",
+    category: "",
     target: "",
     minInvestment: "",
     duration: "",
     image: null,
-    imagePreview: null,
   });
+  const [imagePreview, setImagePreview] = useState(null);
 
-  const categories = [
-    "Medical",
-    "Emergency",
-    "Business",
-    "Animal",
-    "Education",
-    "Community",
-    "Sports",
-    "Creative",
-  ];
+  const allCategories = getAllCategories();
 
-  const handleInputChange = (e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setProjectData((prev) => ({
       ...prev,
@@ -39,38 +31,33 @@ const CreateProject = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      // Create a preview URL for the selected image
+      const previewUrl = URL.createObjectURL(file);
+      setImagePreview(previewUrl);
       setProjectData((prev) => ({
         ...prev,
         image: file,
-        imagePreview: URL.createObjectURL(file),
       }));
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    addProject({
-      name: projectData.name,
-      category: projectData.category,
-      description: projectData.description,
-      target: projectData.target,
-      minInvestment: projectData.minInvestment,
-      daysLeft: projectData.duration,
-      image: projectData.imagePreview,
-    });
-
-    navigate("/");
-  };
-
-  const handleCancel = () => {
+    const newProject = {
+      ...projectData,
+      icon: getCategoryIcon(projectData.category),
+      daysLeft: parseInt(projectData.duration) || 30,
+      image: imagePreview, // Use the preview URL for now
+    };
+    addProject(newProject);
     navigate("/");
   };
 
   return (
     <div className="create-project">
-      <div className="create-project-container">
-        <h1>Create New Project</h1>
-        <form onSubmit={handleSubmit} className="project-form">
+      <div className="form-container">
+        <h2>Create New Project</h2>
+        <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="name">Project Name</label>
             <input
@@ -78,9 +65,19 @@ const CreateProject = () => {
               id="name"
               name="name"
               value={projectData.name}
-              onChange={handleInputChange}
+              onChange={handleChange}
               required
-              placeholder="Enter project name"
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="description">Description</label>
+            <textarea
+              id="description"
+              name="description"
+              value={projectData.description}
+              onChange={handleChange}
+              required
             />
           </div>
 
@@ -90,29 +87,16 @@ const CreateProject = () => {
               id="category"
               name="category"
               value={projectData.category}
-              onChange={handleInputChange}
+              onChange={handleChange}
               required
             >
               <option value="">Select a category</option>
-              {categories.map((category) => (
-                <option key={category} value={category.toLowerCase()}>
+              {allCategories.map((category) => (
+                <option key={category} value={category}>
                   {category}
                 </option>
               ))}
             </select>
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="description">Description</label>
-            <textarea
-              id="description"
-              name="description"
-              value={projectData.description}
-              onChange={handleInputChange}
-              required
-              placeholder="Describe your project"
-              rows="4"
-            />
           </div>
 
           <div className="form-row">
@@ -123,10 +107,9 @@ const CreateProject = () => {
                 id="target"
                 name="target"
                 value={projectData.target}
-                onChange={handleInputChange}
+                onChange={handleChange}
+                min="1000"
                 required
-                min="0"
-                placeholder="Enter target amount"
               />
             </div>
 
@@ -137,26 +120,24 @@ const CreateProject = () => {
                 id="minInvestment"
                 name="minInvestment"
                 value={projectData.minInvestment}
-                onChange={handleInputChange}
+                onChange={handleChange}
+                min="100"
                 required
-                min="0"
-                placeholder="Enter minimum investment"
               />
             </div>
           </div>
 
           <div className="form-group">
-            <label htmlFor="duration">Duration (days)</label>
+            <label htmlFor="duration">Duration (Days)</label>
             <input
               type="number"
               id="duration"
               name="duration"
               value={projectData.duration}
-              onChange={handleInputChange}
-              required
+              onChange={handleChange}
               min="1"
               max="365"
-              placeholder="Enter campaign duration"
+              required
             />
           </div>
 
@@ -171,9 +152,9 @@ const CreateProject = () => {
               required
               className="file-input"
             />
-            {projectData.imagePreview && (
+            {imagePreview && (
               <div className="image-preview">
-                <img src={projectData.imagePreview} alt="Project preview" />
+                <img src={imagePreview} alt="Project preview" />
               </div>
             )}
           </div>
@@ -185,7 +166,7 @@ const CreateProject = () => {
             <button
               type="button"
               className="cancel-button"
-              onClick={handleCancel}
+              onClick={() => navigate("/")}
             >
               Cancel
             </button>
