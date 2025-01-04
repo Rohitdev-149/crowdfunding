@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import ConfirmDialog from "../common/ConfirmDialog";
 import "./Nav.css";
 import { categories } from "../../config/categories";
@@ -10,9 +11,9 @@ const Nav = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showSignOutDialog, setShowSignOutDialog] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const { isAuthenticated, login, logout } = useAuth();
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -36,13 +37,9 @@ const Nav = () => {
   };
 
   const handleConfirmSignOut = () => {
-    setIsAuthenticated(false);
+    logout();
     setShowSignOutDialog(false);
     navigate("/");
-  };
-
-  const handleSignIn = () => {
-    setIsAuthenticated(true);
   };
 
   return (
@@ -149,7 +146,7 @@ const Nav = () => {
                 </button>
               </>
             ) : (
-              <button onClick={handleSignIn} className="nav-item sign-in-btn">
+              <button onClick={login} className="nav-item sign-in-btn">
                 <i className="fas fa-sign-in-alt"></i>
                 Sign In
               </button>

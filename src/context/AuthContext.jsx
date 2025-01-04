@@ -1,26 +1,19 @@
-import { createContext, useContext } from "react";
-import { useAuth0 } from "@auth0/auth0-react";
+import { createContext, useContext, useState } from "react";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const {
-    isAuthenticated,
-    loginWithRedirect,
-    logout: auth0Logout,
-    user,
-  } = useAuth0();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);
 
   const login = () => {
-    loginWithRedirect();
+    setIsAuthenticated(true);
+    setUser({ name: "Guest User" });
   };
 
   const logout = () => {
-    auth0Logout({
-      logoutParams: {
-        returnTo: window.location.origin,
-      },
-    });
+    setIsAuthenticated(false);
+    setUser(null);
   };
 
   return (

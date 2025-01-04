@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ProjectProvider } from "./context/ProjectContext";
+import { AuthProvider } from "./context/AuthContext";
 import Nav from "./components/Navbar/Nav";
 import Footer from "./components/Footer/Footer";
 import Home from "./components/Home/Home";
@@ -14,21 +15,23 @@ import "./App.css";
 function App() {
   return (
     <Router>
-      <div className="App">
-        <Nav />
-        <main className="main-content">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/create-project" element={<CreateProject />} />
-            <Route path="/payment" element={<Payment />} />
-            <Route path="/category/:category" element={<Categories />} />
-          </Routes>
-        </main>
-        <WhyInvestSection />
-        <JoinCommunitySection />
-        <Footer />
-      </div>
+      <AuthProvider>
+        <div className="App">
+          <Nav />
+          <main className="main-content">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/create-project" element={<CreateProject />} />
+              <Route path="/payment" element={<Payment />} />
+              <Route path="/category/:category" element={<Categories />} />
+            </Routes>
+          </main>
+          <WhyInvestSection />
+          <JoinCommunitySection />
+          <Footer />
+        </div>
+      </AuthProvider>
     </Router>
   );
 }
