@@ -7,8 +7,6 @@ import CreateProject from "./components/CreateProject/CreateProject";
 import Payment from "./components/Payment/Payment";
 import Categories from "./components/Categories/Categories";
 import About from "./components/About/About";
-import ProtectedRoute from "./components/common/ProtectedRoute";
-import SignIn from "./components/Auth/SignIn";
 import WhyInvestSection from "./components/common/WhyInvestSection";
 import JoinCommunitySection from "./components/common/JoinCommunitySection";
 import "./App.css";
@@ -22,15 +20,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
-            <Route path="/signin" element={<SignIn />} />
-            <Route
-              path="/create-project"
-              element={
-                <ProtectedRoute>
-                  <CreateProject />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="/create-project" element={<CreateProject />} />
             <Route path="/payment" element={<Payment />} />
             <Route path="/category/:category" element={<Categories />} />
           </Routes>
