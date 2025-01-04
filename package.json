@@ -5,6 +5,7 @@
   "homepage": "https://Rohitdev-149.github.io/crowdfunding",
   "type": "module",
   "scripts": {
+    "git-deploy": " git push origin main && npm run deploy",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
     "dev": "vite",
