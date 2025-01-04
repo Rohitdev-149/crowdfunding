@@ -7,92 +7,94 @@ import "./Categories.css";
 
 const Categories = () => {
   const { category } = useParams();
-  const { getProjectsByCategory } = useProjects();
+  const { projects } = useProjects();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Get projects for this category
-  const categoryProjects = getProjectsByCategory(category);
+  // Filter projects for this category
+  const categoryProjects = projects.filter(
+    (project) => project.category.toLowerCase() === category.toLowerCase()
+  );
+
+  // Get total investment stats for this category
+  const categoryStats = categoryProjects.reduce(
+    (acc, project) => {
+      acc.totalRaised += parseFloat(project.raised.replace(/[^0-9.-]+/g, ""));
+      acc.totalInvestors += project.investors || 0;
+      acc.averageProgress += project.progress;
+      return acc;
+    },
+    { totalRaised: 0, totalInvestors: 0, averageProgress: 0 }
+  );
+
+  if (categoryProjects.length > 0) {
+    categoryStats.averageProgress /= categoryProjects.length;
+  }
 
   // Filter projects by search query
   const filteredProjects = categoryProjects.filter((project) =>
     project.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Get trending projects in this category
-  const trendingProjects = [...filteredProjects]
-    .sort((a, b) => b.progress - a.progress)
-    .slice(0, 3);
-
-  // Get newest projects in this category
-  const newestProjects = [...filteredProjects]
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-    .slice(0, 3);
-
   return (
     <div className="categories-page">
-      <div className="category-header">
+      {/* Category Overview Section */}
+      <div className="category-overview">
         <h1>{category} Projects</h1>
-        <p>Discover and invest in {category.toLowerCase()} opportunities</p>
-
-        <div className="category-search">
-          <div className="search-box">
-            <i className="fas fa-search search-icon"></i>
-            <input
-              type="text"
-              placeholder={`Search ${category} projects...`}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            {searchQuery && (
-              <button
-                className="clear-search"
-                onClick={() => setSearchQuery("")}
-              >
-                <i className="fas fa-times"></i>
-              </button>
-            )}
+        <div className="category-stats">
+          <div className="stat-card">
+            <h3>£{categoryStats.totalRaised.toLocaleString()}</h3>
+            <p>Total Raised</p>
           </div>
-          <div className="search-results">
-            {searchQuery && (
-              <span className="results-count">
-                Found {filteredProjects.length} projects
-              </span>
-            )}
+          <div className="stat-card">
+            <h3>{categoryProjects.length}</h3>
+            <p>Active Projects</p>
+          </div>
+          <div className="stat-card">
+            <h3>{categoryStats.totalInvestors.toLocaleString()}</h3>
+            <p>Total Investors</p>
+          </div>
+          <div className="stat-card">
+            <h3>{categoryStats.averageProgress.toFixed(1)}%</h3>
+            <p>Average Progress</p>
           </div>
         </div>
       </div>
 
-      <ProjectSection
-        title="Trending in This Category"
-        description={`Top performing ${category.toLowerCase()} projects`}
-        projects={trendingProjects}
-        initialCount={3}
-      />
-
-      <ProjectSection
-        title="Newest Additions"
-        description={`Recently added ${category.toLowerCase()} projects`}
-        projects={newestProjects}
-        initialCount={3}
-      />
-
-      <div className="all-projects-section">
-        <h2>All {category} Projects</h2>
-        <div className="projects-grid">
-          {filteredProjects.map((project) => (
-            <ProjectCard key={project.id} project={project} />
-          ))}
+      {/* Search Section */}
+      <div className="category-search">
+        <div className="search-box">
+          <i className="fas fa-search search-icon"></i>
+          <input
+            type="text"
+            placeholder={`Search ${category} projects...`}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          {searchQuery && (
+            <button className="clear-search" onClick={() => setSearchQuery("")}>
+              <i className="fas fa-times"></i>
+            </button>
+          )}
         </div>
       </div>
 
-      {filteredProjects.length === 0 && (
-        <div className="no-results">
-          <i className="fas fa-search"></i>
-          <h3>No projects found</h3>
-          <p>Try adjusting your search terms</p>
-        </div>
-      )}
+      {/* Projects Grid */}
+      <div className="projects-section">
+        {filteredProjects.length > 0 ? (
+          <div className="projects-grid">
+            {filteredProjects.map((project) => (
+              <ProjectCard key={project.id} project={project} />
+            ))}
+          </div>
+        ) : (
+          <div className="no-results">
+            <i className="fas fa-search"></i>
+            <h3>No projects found</h3>
+            <p>Try adjusting your search terms</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

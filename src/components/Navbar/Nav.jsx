@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth0 } from "@auth0/auth0-react";
 import ConfirmDialog from "../common/ConfirmDialog";
 import "./Nav.css";
 import { categories } from "../../config/categories";
@@ -13,7 +13,7 @@ const Nav = () => {
   const [showSignOutDialog, setShowSignOutDialog] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -37,7 +37,7 @@ const Nav = () => {
   };
 
   const handleConfirmSignOut = () => {
-    logout();
+    logout({ returnTo: window.location.origin });
     setShowSignOutDialog(false);
     navigate("/");
   };
@@ -146,10 +146,13 @@ const Nav = () => {
                 </button>
               </>
             ) : (
-              <Link to="/signin" className="nav-item sign-in-btn">
+              <button
+                onClick={() => loginWithRedirect()}
+                className="nav-item sign-in-btn"
+              >
                 <i className="fas fa-sign-in-alt"></i>
                 Sign In
-              </Link>
+              </button>
             )}
           </div>
         </div>
