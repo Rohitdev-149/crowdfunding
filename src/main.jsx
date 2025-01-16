@@ -1,7 +1,7 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { ProjectProvider } from "./context/ProjectContext";
-import App from "/app.jsx";
+import "/app.jsx";
 import "./index.css";
 
 const root = createRoot(document.getElementById("root"));

@@ -1,8 +1,10 @@
 // middleware/error.middleware.js
-import { HTTP_STATUS } from "../config/constants.js";
+import { ApiError } from "./ApiError.js";
 
 export const errorHandler = (err, req, res, next) => {
-  const statusCode = err.statusCode || HTTP_STATUS.INTERNAL_SERVER_ERROR;
-  const message = err.message || "Internal Server Error";
-  res.status(statusCode).json({ success: false, message });
+    if (err instanceof ApiError) {
+        return res.status(err.statusCode).json({ success: err.success, message: err.message, errors: err.errors });
+    }
+    
+    res.status(500).json({ success: false, message: "Internal Server Error" });
 };

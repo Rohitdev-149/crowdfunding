@@ -2,30 +2,23 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { HTTP_STATUS } from "../config/constants.js";
+import { ApiError } from "../middleware/ApiError.js";
+import { ApiResponse } from "../middleware/ApiResponse.js";
 
-export const registerUser = async (req, res) => {
-  try {
+export const registerUser = asyncHandler(async (req, res) => {
     const { name, email, password } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({ name, email, password: hashedPassword });
     await newUser.save();
-    res.status(HTTP_STATUS.CREATED).json({ message: "User registered successfully" });
-  } catch (error) {
-    res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: "Error registering user", error });
-  }
-};
+    res.status(201).json(new ApiResponse(201, null, "User registered successfully"));
+});
 
-export const loginUser = async (req, res) => {
-  try {
+export const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
     if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.status(HTTP_STATUS.UNAUTHORIZED).json({ message: "Invalid credentials" });
+        throw new ApiError(401, "Invalid credentials");
     }
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
-    res.status(HTTP_STATUS.OK).json({ token });
-  } catch (error) {
-    res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: "Error logging in", error });
-  }
-};
+    res.status(200).json(new ApiResponse(200, { token }, "Login successful"));
+});
