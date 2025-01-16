@@ -1,15 +1,15 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { ProjectProvider } from "./context/ProjectContext";
-import { AuthProvider } from "./context/AuthContext";
-import Nav from "./components/Navbar/Nav";
-import Footer from "./components/Footer/Footer";
-import Home from "./components/Home/Home";
-import CreateProject from "./components/CreateProject/CreateProject";
-import Payment from "./components/Payment/Payment";
-import Categories from "./components/Categories/Categories";
-import About from "./components/About/About";
-import WhyInvestSection from "./components/common/WhyInvestSection";
-import JoinCommunitySection from "./components/common/JoinCommunitySection";
+import { ProjectProvider } from "./context/ProjectContext.jsx";
+import { AuthProvider } from "./context/AuthContext.jsx";
+import Nav from "./components/Navbar/Nav.jsx";
+import Footer from "./components/Footer/Footer.jsx";
+import Home from "./components/Home/Home.jsx";
+import CreateProject from "./components/CreateProject/CreateProject.jsx";
+import Payment from "./components/Payment/Payment.jsx";
+import Categories from "./components/Categories/Categories.jsx";
+import About from "./components/About/About.jsx";
+import WhyInvestSection from "./components/common/WhyInvestSection.jsx";
+import JoinCommunitySection from "./components/common/JoinCommunitySection.jsx";
 
 import ProjectDetails from "./components/projectDetails/ProjectDetails.jsx";
 import "./App.css";
