@@ -8,6 +8,10 @@ const ProjectCard = ({ project, isCompact = false }) => {
     navigate("/payment", { state: { project } });
   };
 
+  const handleViewClick = () => {
+    navigate(`/project/${project.id}`, { state: { project } });
+  };
+
   return (
     <div className={`project-card ${isCompact ? "compact" : ""}`}>
       <div className="card-header">
@@ -63,11 +67,16 @@ const ProjectCard = ({ project, isCompact = false }) => {
           </div>
         </div>
 
-        {!isCompact && (
-          <button className="invest-button" onClick={handleInvestClick}>
-            Invest Now
-          </button>
-        )}
+        
+          <div className="button-group">
+            <button className="view-button" onClick={handleViewClick}>
+              View
+            </button>
+            <button className="invest-button" onClick={handleInvestClick}>
+              Invest Now
+            </button>
+          </div>
+        
       </div>
     </div>
   );

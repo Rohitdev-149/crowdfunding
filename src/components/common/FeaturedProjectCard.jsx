@@ -55,9 +55,7 @@ const FeaturedProjectCard = ({ project }) => {
               className="progress-fill"
               style={{ width: `${project.progress}%` }}
             >
-              <span className="progress-tooltip">
-                {project.progress}% Funded
-              </span>
+              <span className="progress-percentage">{project.progress}%</span>
             </div>
           </div>
         </div>

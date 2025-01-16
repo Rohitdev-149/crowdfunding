@@ -157,3 +157,36 @@ textarea {
     max-width: 100%;
   }
 }
+.profile-preview img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-top: 10px;
+}
+
+.previews-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.preview-item img,
+.preview-item video {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.description-preview {
+  margin-top: 30px;
+}
+
+.content-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}

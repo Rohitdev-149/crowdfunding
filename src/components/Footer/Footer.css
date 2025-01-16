@@ -1,5 +1,5 @@
 .footer {
-  background-color: #0a1e38;
+  background-color: #6184b1;
   color: white;
   padding: 0;
   margin-top: auto;
@@ -47,6 +47,7 @@
 .social-links {
   display: flex;
   gap: 1rem;
+  justify-content: space-between;
 }
 
 .social-links a {
@@ -63,8 +64,8 @@
   max-width: 1200px;
   margin: 0 auto;
   text-align: center;
-  padding-top: 2rem;
-  margin-top: 2rem;
+  padding-top: 1rem;
+  margin-top: -1rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   padding-bottom: 4rem;
 }

@@ -19,12 +19,7 @@ const ProjectSection = ({ title, description, projects, initialCount = 3 }) => {
             <h2>{title}</h2>
             {description && <p>{description}</p>}
           </div>
-          {projects.length > initialCount && !showAll && (
-            <button className="view-all-btn" onClick={() => setShowAll(true)}>
-              View All
-              <i className="fas fa-arrow-right"></i>
-            </button>
-          )}
+         
         </div>
 
         <div className="projects-grid">
@@ -46,6 +41,12 @@ const ProjectSection = ({ title, description, projects, initialCount = 3 }) => {
             </div>
           ))}
         </div>
+        {projects.length > initialCount && !showAll && (
+            <button className="view-all-btn" onClick={() => setShowAll(true)}>
+              View All
+              <i className="fas fa-arrow-right"></i>
+            </button>
+          )}
       </div>
     </section>
   );

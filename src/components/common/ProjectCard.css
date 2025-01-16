@@ -185,3 +185,37 @@
     font-size: 1.1rem;
   }
 }
+.button-group {
+  display: flex;
+  gap: 10px;
+}
+
+.view-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.view-button:hover {
+  background-color: #0056b3;
+}
+
+.invest-button {
+  margin-top: 0rem;
+    padding: 9px 10px;
+    font-size: 1rem;
+    color: white;
+    background: #4caf50;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.invest-button:hover {
+  background-color: #218838;
+}

@@ -10,6 +10,8 @@ import Categories from "./components/Categories/Categories";
 import About from "./components/About/About";
 import WhyInvestSection from "./components/common/WhyInvestSection";
 import JoinCommunitySection from "./components/common/JoinCommunitySection";
+
+import ProjectDetails from "./components/projectDetails/ProjectDetails.jsx";
 import "./App.css";
 
 function App() {
@@ -25,6 +27,8 @@ function App() {
               <Route path="/create-project" element={<CreateProject />} />
               <Route path="/payment" element={<Payment />} />
               <Route path="/category/:category" element={<Categories />} />
+
+              <Route path="/project/:id" element={<ProjectDetails />} />
             </Routes>
           </main>
           <WhyInvestSection />

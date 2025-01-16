@@ -6,6 +6,8 @@
   transition: transform 0.3s ease;
   margin-bottom: 2rem;
   max-width: 380px;
+  padding: 0rem 1rem;
+ 
 }
 
 .featured-project-card:hover {
@@ -44,7 +46,7 @@
 }
 
 .featured-content {
-  padding: 1.5rem;
+  padding: 0.5rem;
 }
 
 .featured-header {
@@ -84,7 +86,7 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
   margin-bottom: 1.5rem;
-  padding: 1rem;
+  padding: 3px;
   background: #f8f9fa;
   border-radius: 8px;
 }
@@ -115,24 +117,35 @@
 }
 
 .progress-container {
-  margin-bottom: 2rem;
+  margin: 20px 0;
+  
 }
 
 .progress-bar {
-  height: 8px;
-  background: #e9ecef;
-  border-radius: 4px;
+  height: 15px; /* Compact height for the progress bar */
+  background: #e0e0e0; /* Light gray background for the bar */
+  border-radius: 10px;
   overflow: hidden;
   position: relative;
 }
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #02a95c, #02c56d);
-  border-radius: 4px;
-  position: relative;
-  transition: width 0.3s ease;
+  background: #4caf50; /* Green fill for progress */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem; /* Smaller font for percentage text */
+  font-weight: bold;
+  color: white;
+  border-radius: 10px 0 0 10px; /* Rounded edges on the left side */
 }
+
+.progress-percentage {
+  position: relative;
+  z-index: 1; /* Ensure percentage text is above the fill */
+}
+
 
 .progress-tooltip {
   position: absolute;
@@ -176,6 +189,7 @@
 .invest-now-btn {
   background: #02a95c;
   color: white;
+  height: 3rem;
 }
 
 .invest-now-btn:hover {
@@ -187,6 +201,7 @@
   background: #f8f9fa;
   color: #0a1e38;
   border: 1px solid #dee2e6;
+  height: 3rem;
 }
 
 .view-details-btn:hover {
